@@ -313,7 +313,8 @@ public class RobotNew extends LinearOpMode {
     // cone 1 = 544  cone 2 = 460 cone 3 = 340 cone 4 = 200 cone 5 = 0
 
     public static double clawClose = 0.1;
-    public static double clawOpen = 0.0;
+    public static double clawOpen = 0.0
+            ;
 
 
 

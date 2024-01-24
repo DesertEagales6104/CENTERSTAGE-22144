@@ -17,13 +17,22 @@ public class TeleopMecanum extends RobotNew {
         double y = -gamepad1.left_stick_y; // Remember, this is reversed!
         double x = gamepad1.left_stick_x * 1.1;
         double rx = gamepad1.right_stick_x;
-//        double elevator = gamepad1.left_trigger;
-        //claw.setPosition(clawOpen);
+
+        claw.setPosition(clawOpen);
         //armPos(armReset);
 
         waitForStart();
         elapsedTime.reset();
         while (opModeIsActive() && !isStopRequested()) {
+
+            if (claw.getPosition()== clawOpen ) {
+                checkSensor = true;
+            }
+
+            if (colorSensor.getDistance(DistanceUnit.MM)<30 && checkSensor && isGround){
+                ToggleClaw();
+                checkSensor = false;
+            }
 
 
             double botHeading = -imu.getAngularOrientation().firstAngle /*- Math.PI*/;
@@ -40,10 +49,10 @@ public class TeleopMecanum extends RobotNew {
             double rbPower = (rotY + rotX - rx) /denominator;
 
 
-//            drive.lf.setPower(/*y + x + rx*/lfPower);
-//            drive.lb.setPower(/*y - x + rx*/lbPower);
-//            drive.rf.setPower(/*y - x - rx*/rfPower);
-//            drive.rb.setPower(/*y + x - rx*/rbPower);
+            drive.lf.setPower(/*y + x + rx*/lfPower);
+            drive.lb.setPower(/*y - x + rx*/lbPower);
+            drive.rf.setPower(/*y - x - rx*/rfPower);
+            drive.rb.setPower(/*y + x - rx*/rbPower);
 
             if (gamepad1.circle){
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
