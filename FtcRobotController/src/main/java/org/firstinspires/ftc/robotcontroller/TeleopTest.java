@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
 @TeleOp
-public class TeleopTest extends LinearOpMode {
+public class TeleopTest extends RobotNew {
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
         // Declare our motors
         // Make sure your ID's match your configuration
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
@@ -44,6 +45,10 @@ public class TeleopTest extends LinearOpMode {
             double i = gamepad1.right_trigger;
             //double ia gamepad1.right_bumper;
 
+            double botHeading = -imu.getAngularOrientation().firstAngle /*- Math.PI*/;
+
+            double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+            double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
@@ -56,6 +61,13 @@ public class TeleopTest extends LinearOpMode {
             double rightElevatorPower =ry;
             double leftElevatorPower=ry;
             double intakePower=i;
+
+            if (gamepad1.circle){
+                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                imu.initialize(parameters);
+
+            }
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
