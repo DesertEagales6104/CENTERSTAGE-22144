@@ -40,10 +40,10 @@ public class Teleop1 extends RobotNew {
             double rbPower = (rotY + rotX - rx) /denominator;
 
 
-            drive.lf.setPower(/*y + x + rx*/lfPower);
-            drive.lb.setPower(/*y - x + rx*/lbPower);
-            drive.rf.setPower(/*y - x - rx*/rfPower);
-            drive.rb.setPower(/*y + x - rx*/rbPower);
+//            drive.lf.setPower(/*y + x + rx*/lfPower);
+//            drive.lb.setPower(/*y - x + rx*/lbPower);
+//            drive.rf.setPower(/*y - x - rx*/rfPower);
+//            drive.rb.setPower(/*y + x - rx*/rbPower);
 
             if (gamepad1.circle){
                 BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
