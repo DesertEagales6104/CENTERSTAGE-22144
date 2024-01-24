@@ -22,6 +22,7 @@ public class TeleopMecanum extends RobotNew {
         //armPos(armReset);
 
         waitForStart();
+
         elapsedTime.reset();
         while (opModeIsActive() && !isStopRequested()) {
 

@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.robotcontroller;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 
 @TeleOp
-public class TeleopTest extends RobotNew {
+public class TeleopTest extends RobotNew LinearOpMode {
     @Override
-    public void runOpMode(){
+    public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
@@ -45,12 +45,39 @@ public class TeleopTest extends RobotNew {
             double i = gamepad1.right_trigger;
             //double ia gamepad1.right_bumper;
 
-            double botHeading = -imu.getAngularOrientation().firstAngle /*- Math.PI*/;
+            elapsedTime.reset();
+            while (opModeIsActive() && !isStopRequested()) {
 
-            double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-            double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
-            // Denominator is the largest motor power (absolute value) or 1
+                double botHeading = -imu.getAngularOrientation().firstAngle /*- Math.PI*/;
+
+                double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+
+
+
+                double denominator = Math.max(Math.abs(y)+Math.abs(x)+Math.abs(rx),1);
+                double lfPower = (rotY + rotX + rx) /denominator;
+                double lbPower = (rotY - rotX + rx) /denominator;
+                double rfPower = (rotY - rotX - rx) /denominator;
+                double rbPower = (rotY + rotX - rx) /denominator;
+
+
+//            drive.lf.setPower(/*y + x + rx*/lfPower);
+//            drive.lb.setPower(/*y - x + rx*/lbPower);
+//            drive.rf.setPower(/*y - x - rx*/rfPower);
+//            drive.rb.setPower(/*y + x - rx*/rbPower);
+
+                if (gamepad1.circle){
+                    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+                    parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+                    imu.initialize(parameters);
+
+                }
+
+
+
+                // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -61,13 +88,6 @@ public class TeleopTest extends RobotNew {
             double rightElevatorPower =ry;
             double leftElevatorPower=ry;
             double intakePower=i;
-
-            if (gamepad1.circle){
-                BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-                parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-                imu.initialize(parameters);
-
-            }
 
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
